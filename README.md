@@ -3,6 +3,10 @@
 ## QA Engineer (3+ years expirience) now in Riverstart comp.
 
 ### Learning now
+Python
+Selenium
+VSCode
+To live
 
 
 #### My tools
@@ -15,5 +19,13 @@
 ![DevTools](https://img.shields.io/badge/-Devtools-090909?style=for-the-badge&logo=googlechrome&logoColor=47C5FB)
 ![Docker](https://img.shields.io/badge/-Docker-090909?style=for-the-badge&logo=docker&logoColor=47C5FB)
 
+#### My projects
+[![Citilink](https://img.shields.io/badge/-Citilink-FFC6AC?style=for-the-badge&logo=citilink&logoColor=FFC6AC)](https://citilink.ru/)
+[![Numis](https://img.shields.io/badge/-Numis-FFC6AC?style=for-the-badge&logo=numis&logoColor=FFC6AC)](https://numi.plus/)
+[![VSHGU](https://img.shields.io/badge/-VSHGU-FFC6AC?style=for-the-badge&logo=ranepa&logoColor=FFC6AC)](https://gspm.ranepa.ru/)
+[![Dvizhenie_pervih](https://img.shields.io/badge/-Pervie-FFC6AC?style=for-the-badge&logo=pervie&logoColor=FFC6AC)](https://pervye.ru/)
+[![Vnukovo](https://img.shields.io/badge/-Vnukovo_airport-FFC6AC?style=for-the-badge&logo=vnukovo&logoColor=FFC6AC)](https://www.vnukovo.ru/ru/)
+![MeteoStation](https://img.shields.io/badge/-MeteoStation-FFC6AC?style=for-the-badge&logo=vnukovo&logoColor=FFC6AC)
 
-TG, YT, 
+https://www.youtube.com/@kinassgaming
+https://t.me/big_notbad_john
