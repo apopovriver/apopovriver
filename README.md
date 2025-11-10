@@ -1,9 +1,10 @@
 ![Header](https://github.com/apopovriver/apopovriver/blob/main/assets/238353480-219bcc70-f5dc-466b-9a60-29653d8e8433.gif)
 
-About me
+## QA Engineer now in Riverstart.
 
 Learning now
 
-Languages and tools
+### Languages and tools
+![Some English](https://img.shields.io/badge/-Intermediate-090909)
 
 TG, YT, 
