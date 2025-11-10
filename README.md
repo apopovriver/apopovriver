@@ -5,6 +5,6 @@
 Learning now
 
 ### Languages and tools
-![Some English](https://img.shields.io/badge/-Intermediate-090909?style=for-the-badge&logo=eng)
+![Some English](https://img.shields.io/badge/-Intermediate-090909?style=for-the-badge&logo=england)
 
 TG, YT, 
