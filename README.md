@@ -6,11 +6,9 @@
 
 <h2 align="left">QA Engineer (3+ years expirience) now in Riverstart comp.</h2>
 
-<div style="position:relative; left:0; right:0; margin-left:0; margin-right:0; width:100%; background:rgba(221, 205, 205, 0.52); box-shadow:0 4px 30px rgba(148, 127, 127, 0.97); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border:1px solid rgba(255, 255, 255, 0.78); padding:6px 0;">
-  <div style="display:flex; justify-content:left; align-items:center;">
-    <img src="./assets/4d2562cc2cbb40fa98bb9a96efdd069d.png" alt="Riverstart logo" style="display:block; transform: scale(0.56); transform-origin: center center;" />
-  </div>
-</div>
+<p align="left">
+  <img src="./assets/4d2562cc2cbb40fa98bb9a96efdd069d.png" alt="Riverstart logo" style="display:inline-block; transform: scale(0.7); transform-origin: left top;" />
+</p>
 
 <h3 align="left">Learning now</h3>
 
