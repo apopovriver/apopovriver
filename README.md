@@ -97,6 +97,7 @@
   </li>
   <li><a href="https://github.com/apopovriver/apopovriver/blob/main/Artifacts/%D0%A7%D0%B5%D0%BA%20%D0%BB%D0%B8%D1%81%D1%82%20%D0%94%D0%9F.pdf" target="_blank" rel="noopener noreferrer">Checklists</a> &nbsp;|&nbsp; <a href="https://docs.google.com/spreadsheets/d/1sssi8HW7Ng9WhCC11sbkmi7wDJhVszQ7cYYlFnio4BM/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Напрямую в гугл</a></li>
   <li><a href="https://github.com/apopovriver/apopovriver/blob/main/Artifacts/Tests_MeteoStation.md" target="_blank" rel="noopener noreferrer">Test cases</a> &nbsp;|&nbsp; <a href="https://github.com/apopovriver/apopovriver/blob/main/Artifacts/Tests_MeteoStation.md" target="_blank" rel="noopener noreferrer">MeteoStation</a></li>
+  <li><a href="https://github.com/apopovriver/apopovriver/blob/main/Artifacts/%D0%91%D0%B0%D0%B3%20%D1%80%D0%B5%D0%BF%D0%BE%D1%80%D1%82.png" target="_blank" rel="noopener noreferrer">Report preview</a> &nbsp;|&nbsp; <a href="https://github.com/apopovriver/apopovriver/blob/main/Artifacts/%D0%91%D0%B0%D0%B3%20%D1%80%D0%B5%D0%BF%D0%BE%D1%80%D1%82.png" target="_blank" rel="noopener noreferrer">Зачем?)</a></li>
 </ul>
 
 <h4 align="left">Social</h4>
