@@ -3,7 +3,9 @@
 ## QA Engineer (3+ years expirience) now in Riverstart comp.
 
 <p align="center">
-  <img src="./assets/4d2562cc2cbb40fa98bb9a96efdd069d.png" alt="Riverstart logo" height="32" />
+  <span style="display:inline-block; padding:10px 14px; border-radius:12px; background:rgba(255,255,255,0.2); box-shadow:0 4px 30px rgba(0,0,0,0.05); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border:1px solid rgba(255,255,255,0.2);">
+    <img src="./assets/4d2562cc2cbb40fa98bb9a96efdd069d.png" alt="Riverstart logo" style="display:block; transform: scale(0.56); transform-origin: center center;" />
+  </span>
 </p>
 
 ### Learning now
