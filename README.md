@@ -25,15 +25,22 @@
 <h4 align="left">My tools</h4>
  
 <ul style="list-style:none; padding:0; margin:0; text-align:left;">
-  <li><img src="https://img.shields.io/badge/-Jira-090909?style=for-the-badge&logo=jira&logoColor=47C5FB" alt="Jira" /> — ⭐⭐⭐⭐☆</li>
-  <li><img src="https://img.shields.io/badge/-Postman-090909?style=for-the-badge&logo=postman&logoColor=47C5FB" alt="Postman" /> — ⭐⭐⭐☆☆</li>
-  <li><img src="https://img.shields.io/badge/-GIT-090909?style=for-the-badge&logo=git&logoColor=47C5FB" alt="Git" /> — ⭐⭐⭐☆☆</li>
-  <li><img src="https://img.shields.io/badge/-Confluence-090909?style=for-the-badge&logo=confluence&logoColor=47C5FB" alt="Confluence" /> — ⭐⭐⭐⭐☆</li>
-  <li><img src="https://img.shields.io/badge/-Figma-090909?style=for-the-badge&logo=figma&logoColor=47C5FB" alt="Figma" /> — ⭐⭐⭐⭐☆</li>
-  <li><img src="https://img.shields.io/badge/-PostgreSQL-090909?style=for-the-badge&logo=postgresql&logoColor=47C5FB" alt="PostgreSQL" /> — ⭐⭐☆☆☆</li>
-  <li><img src="https://img.shields.io/badge/-Devtools-090909?style=for-the-badge&logo=googlechrome&logoColor=47C5FB" alt="DevTools" /> — ⭐⭐⭐⭐☆</li>
-  <li><img src="https://img.shields.io/badge/-Docker-090909?style=for-the-badge&logo=docker&logoColor=47C5FB" alt="Docker" /> — ⭐☆☆☆☆</li>
+  <li><img src="https://img.shields.io/badge/-Jira-090909?style=for-the-badge&logo=jira&logoColor=47C5FB" alt="Jira" title="4⭐ — middle+ level" /> — ⭐⭐⭐⭐☆</li>
+  <li><img src="https://img.shields.io/badge/-Postman-090909?style=for-the-badge&logo=postman&logoColor=47C5FB" alt="Postman" title="3⭐ — middle level" /> — ⭐⭐⭐☆☆</li>
+  <li><img src="https://img.shields.io/badge/-GIT-090909?style=for-the-badge&logo=git&logoColor=47C5FB" alt="Git" title="3⭐ — middle level" /> — ⭐⭐⭐☆☆</li>
+  <li><img src="https://img.shields.io/badge/-Confluence-090909?style=for-the-badge&logo=confluence&logoColor=47C5FB" alt="Confluence" title="4⭐ — middle+ level" /> — ⭐⭐⭐⭐☆</li>
+  <li><img src="https://img.shields.io/badge/-Figma-090909?style=for-the-badge&logo=figma&logoColor=47C5FB" alt="Figma" title="4⭐ — middle+ level" /> — ⭐⭐⭐⭐☆</li>
+  <li><img src="https://img.shields.io/badge/-PostgreSQL-090909?style=for-the-badge&logo=postgresql&logoColor=47C5FB" alt="PostgreSQL" title="2⭐ — Beginner level" /> — ⭐⭐☆☆☆</li>
+  <li><img src="https://img.shields.io/badge/-Devtools-090909?style=for-the-badge&logo=googlechrome&logoColor=47C5FB" alt="DevTools" title="4⭐ — middle+ level" /> — ⭐⭐⭐⭐☆</li>
+  <li><img src="https://img.shields.io/badge/-Docker-090909?style=for-the-badge&logo=docker&logoColor=47C5FB" alt="Docker" title="1⭐ — Base level" /> — ⭐☆☆☆☆</li>
+  <li><img src="https://img.shields.io/badge/-Brain%20usage-090909?style=for-the-badge&logo=openai&logoColor=47C5FB" alt="Brain usage" title="5⭐ — Senior (god)" /> — ⭐⭐⭐⭐⭐</li>
+
 </ul>
+
+<p style="margin-top:6px; font-size:14px; color:#666;">
+  Legend: 1⭐ — Base level; 2⭐ — Beginner level; 3⭐ — middle level; 4⭐ — middle+ level; 5⭐ — Senior (god)
+  
+</p>
 
 <h4 align="left">My projects</h4>
  
@@ -70,10 +77,10 @@
 <h4 align="left">Social</h4>
 
 <p align="left">
-  <a href="https://www.youtube.com/@kinassgaming" target="_blank" rel="noopener noreferrer">
+  <a href="https://www.youtube.com/@kinassgaming" target="_blank" rel="noopener noreferrer" style="text-decoration:none; display:inline-block;">
     <img src="./assets/Youtube_icon-icons.com_66802.png" alt="YouTube" width="32" height="32" title="лучше не смотреть, там только игры (и давно)" />
   </a>
-  <a href="https://t.me/big_notbad_john" target="_blank" rel="noopener noreferrer" style="margin-left:8px;">
+  <a href="https://t.me/big_notbad_john" target="_blank" rel="noopener noreferrer" style="margin-left:8px; text-decoration:none; display:inline-block;">
     <img src="./assets/telegram_1603076.png" alt="Telegram" width="32" height="32" />
   </a>
 </p>
