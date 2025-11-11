@@ -2,6 +2,10 @@
 
 ## QA Engineer (3+ years expirience) now in Riverstart comp.
 
+<p align="center">
+  <img src="./assets/4d2562cc2cbb40fa98bb9a96efdd069d.png" alt="Riverstart logo" height="32" />
+</p>
+
 ### Learning now
 
 - Python   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="Python" width="48" height="48" title="Python" />
@@ -13,7 +17,7 @@
  
 - ![Jira](https://img.shields.io/badge/-Jira-090909?style=for-the-badge&logo=jira&logoColor=47C5FB) — ⭐⭐⭐⭐☆
 - ![Postman](https://img.shields.io/badge/-Postman-090909?style=for-the-badge&logo=postman&logoColor=47C5FB) — ⭐⭐⭐☆☆
-- ![Git](https://img.shields.io/badge/-GIT-090909?style=for-the-badge&logo=git&logoColor=47C5FB) — ⭐⭐☆☆☆
+- ![Git](https://img.shields.io/badge/-GIT-090909?style=for-the-badge&logo=git&logoColor=47C5FB) — ⭐⭐⭐☆☆
 - ![Confluence](https://img.shields.io/badge/-Confluence-090909?style=for-the-badge&logo=confluence&logoColor=47C5FB) — ⭐⭐⭐⭐☆
 - ![Figma](https://img.shields.io/badge/-Figma-090909?style=for-the-badge&logo=figma&logoColor=47C5FB) — ⭐⭐⭐⭐☆
 - ![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-090909?style=for-the-badge&logo=postgresql&logoColor=47C5FB) — ⭐⭐☆☆☆
