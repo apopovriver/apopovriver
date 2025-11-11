@@ -96,7 +96,7 @@
     <a href="https://app.getpostman.com/join-team?invite_code=42faa653f9f0456a6836802f15f28b5090354463d7dd8161056496f963795cea&target_code=3742edbeffcdbf538cc490dc4208f699" target="_blank" rel="noopener noreferrer">Перейти в коллекцию</a>
   </li>
   <li><a href="https://github.com/apopovriver/apopovriver/blob/main/Artifacts/%D0%A7%D0%B5%D0%BA%20%D0%BB%D0%B8%D1%81%D1%82%20%D0%94%D0%9F.pdf" target="_blank" rel="noopener noreferrer">Checklists</a> &nbsp;|&nbsp; <a href="https://docs.google.com/spreadsheets/d/1sssi8HW7Ng9WhCC11sbkmi7wDJhVszQ7cYYlFnio4BM/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Напрямую в гугл</a></li>
-  <li><a href="#" target="_blank" rel="noopener noreferrer">Test cases</a></li>
+  <li><a href="https://github.com/apopovriver/apopovriver/blob/main/Artifacts/Tests_MeteoStation.md" target="_blank" rel="noopener noreferrer">Test cases</a> &nbsp;|&nbsp; <a href="https://github.com/apopovriver/apopovriver/blob/main/Artifacts/Tests_MeteoStation.md" target="_blank" rel="noopener noreferrer">MeteoStation</a></li>
 </ul>
 
 <h4 align="left">Social</h4>
