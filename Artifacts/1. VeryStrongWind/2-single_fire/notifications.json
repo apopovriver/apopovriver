@@ -1,0 +1,20 @@
+[
+  {
+    "dt": "2025-11-01 09:00:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c1",
+    "phenomenon": "VeryStrongWind",
+    "trigger": {"type": "gust", "wm": 26.23}
+  },
+  {
+    "dt": "2025-11-01 11:00:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c1",
+    "phenomenon": "VeryStrongWind",
+    "trigger": {"type": "avg_speed", "wv": 20.0}
+  },
+  {
+    "dt": "2025-11-01 12:40:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c1",
+    "phenomenon": "VeryStrongWind",
+    "trigger": {"type": "avg_speed", "wv": 24.9}
+  }
+]

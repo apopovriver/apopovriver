@@ -1,0 +1,50 @@
+[
+  {
+    "dt": "2025-11-01 00:05:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c2",
+    "phenomenon": "VeryStrongWind",
+    "trigger": {"type": "avg_speed", "wv": 20.5}
+  },
+  {
+    "dt": "2025-11-01 00:10:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c3",
+    "phenomenon": "VeryStrongWind",
+    "trigger": {"type": "gust", "wm": 26.2}
+  },
+  {
+    "dt": "2025-11-01 01:40:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c1",
+    "phenomenon": "VeryStrongWind",
+    "trigger": {"type": "gust", "wm": 25.5}
+  },
+  {
+    "dt": "2025-11-01 01:40:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c3",
+    "phenomenon": "VeryStrongWind",
+    "trigger": {"type": "avg_speed", "wv": 21.0}
+  },
+  {
+    "dt": "2025-11-01 01:45:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c2",
+    "phenomenon": "VeryStrongWind",
+    "trigger": {"type": "gust", "wm": 26.0}
+  },
+  {
+    "dt": "2025-11-01 05:50:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c1",
+    "phenomenon": "VeryStrongWind",
+    "trigger": {"type": "gust", "wm": 26.0}
+  },
+  {
+    "dt": "2025-11-01 13:20:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c3",
+    "phenomenon": "HurricaneWind",
+    "trigger": {"type": "gust", "wm": 33.5}
+  },
+  {
+    "dt": "2025-11-01 15:50:00",
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c3",
+    "phenomenon": "VeryStrongWind",
+    "trigger": {"type": "gust", "wm": 25.0}
+  }
+]

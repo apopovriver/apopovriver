@@ -1,0 +1,16 @@
+[
+  {
+    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c1",
+    "phenomenon": "VeryStrongWind",
+    "type": "reliable",
+    "start_time": "2025-11-01 00:00:00",
+    "last_time": "2025-11-02 23:50:00",
+    "end_time": null,
+    "values": {
+      "triggers": ["avg_speed", "gust"],
+      "max_wm": 26.5,
+      "max_wv": 23.0
+    },
+    "notes": null
+  }
+]
