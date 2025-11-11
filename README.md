@@ -7,7 +7,9 @@
 <h2 align="left">QA Engineer (3+ years expirience) now in Riverstart comp.</h2>
 
 <p align="left">
-  <img src="./assets/4d2562cc2cbb40fa98bb9a96efdd069d.png" alt="Riverstart logo" style="display:inline-block; transform: scale(0.7); transform-origin: left top;" />
+  <a href="https://riverstart.ru/" target="_blank" rel="noopener noreferrer">
+    <img src="./assets/4d2562cc2cbb40fa98bb9a96efdd069d.png" alt="Riverstart logo" style="display:inline-block; transform: scale(0.7); transform-origin: left top;" />
+  </a>
 </p>
 
 <h3 align="left">Learning now</h3>
