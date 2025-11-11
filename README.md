@@ -4,7 +4,10 @@
 
 <div align="left" style="font-size:18px; line-height:1.6;">
 
-<h2 align="left">QA Engineer (3+ years expirience) now in Riverstart comp.</h2>
+<h2 align="left">QA Engineer (29 y.o.) (3+ years experience) now in Riverstart company.</h2>
+<p align="left" style="margin:6px 0;">
+  Actively using AI (OpenAI, Google AI, Grok, DeepSeek, Applitools Eyes) to optimize time and automate routine
+</p>
 
 <p align="left">
   <a href="https://riverstart.ru/" target="_blank" rel="noopener noreferrer">
@@ -83,6 +86,14 @@
   <img src="https://www.google.com/s2/favicons?domain=openweathermap.org&sz=32" alt="MeteoStation logo" width="24" height="24" style="vertical-align:middle; margin-right:6px;" />
   <img src="https://img.shields.io/badge/-MeteoStation-FFC6AC?style=for-the-badge&logo=weather&logoColor=FFC6AC" alt="MeteoStation" />
 </p>
+
+<h4 align="left">QA Artifacts</h4>
+
+<ul style="list-style:disc; padding-left:18px; margin:6px 0; text-align:left;">
+  <li><a href="#" target="_blank" rel="noopener noreferrer">Postman collection</a></li>
+  <li><a href="#" target="_blank" rel="noopener noreferrer">Checklists</a></li>
+  <li><a href="#" target="_blank" rel="noopener noreferrer">Test cases</a></li>
+</ul>
 
 <h4 align="left">Social</h4>
 
