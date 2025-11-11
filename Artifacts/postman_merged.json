@@ -1,0 +1,1358 @@
+{
+  "info": {
+    "name": "API Collection (merged, CSV + login flow)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "e7f0c7b8-merged-collection"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://planfact.rs-test.ru/lk" },
+    { "key": "token", "value": "" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const authToken = pm.collectionVariables.get('auth_token_sob');",
+          "if (authToken) {",
+          "  pm.request.headers.add({ key: 'Authorization', value: 'Bearer ' + authToken });",
+          "} else {",
+          "  console.log('Токен не найден. Запустите сначала запрос на авторизацию.');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Send verification code to email",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/send-code/email", "host": ["{{baseUrl}}"], "path": ["api","auth","send-code","email"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"master@test.com\"\n}" },
+            "auth": null
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "let expected = { message: 'info message', type: 'primary' };",
+              "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+              "pm.test('Response includes expected', function () { pm.expect(json).to.deep.include(expected); });"
+            ]}}
+          ]
+        },
+        {
+          "name": "Send verification code to phone",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/send-code/phone", "host": ["{{baseUrl}}"], "path": ["api","auth","send-code","phone"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"7\"\n}" }
+          }
+        },
+        {
+          "name": "Register new user and company",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api","auth","register"] },
+            "body": { "mode": "raw", "raw": "{\n  \"code\": \"051089\"\n}" },
+            "auth": null
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+              "pm.test('Has token', function () { pm.expect(json).to.have.property('token'); });"
+            ]}}
+          ]
+        },
+        {
+          "name": "Login user",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"login\": \"master@test.com\",\n  \"password\": \"12345678\"\n}" },
+            "auth": null
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "  const jsonData = pm.response.json();",
+              "  const authToken = jsonData.token;",
+              "  pm.collectionVariables.set('auth_token_sob', authToken);",
+              "  console.log('Токен успешно сохранен в переменную \"auth_token_sob\":', authToken);",
+              "  pm.test('Токен получен и сохранен', function () {",
+              "    pm.expect(authToken, 'Токен должен существовать').to.not.be.undefined;",
+              "    pm.expect(authToken, 'Токен не должен быть пустым').to.not.be.empty;",
+              "  });",
+              "} else {",
+              "  pm.test('Авторизация не удалась. Получен статус: ' + pm.response.code, function () {",
+              "    pm.expect.fail('Ожидался статус 200 или 201, но получен ' + pm.response.code);",
+              "  });",
+              "}",
+              "pm.test('Запрос выполнен', function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201, 401, 403]);",
+              "});"
+            ]}}
+          ]
+        },
+        {
+          "name": "Request password reset",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/password-reset-request", "host": ["{{baseUrl}}"], "path": ["api","auth","password-reset-request"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"master@test.com\"\n}" },
+            "auth": null
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "let expected = { message: 'info message', type: 'bootstrap type' };",
+              "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+              "pm.test('Response includes expected', function () { pm.expect(json).to.deep.include(expected); });"
+            ]}}
+          ]
+        },
+        {
+          "name": "Reset password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/password-reset", "host": ["{{baseUrl}}"], "path": ["api","auth","password-reset"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"master@test.com\",\n  \"code\": \"117833\",\n  \"password\": \"12345678\",\n  \"password_confirm\": \"12345678\"\n}" },
+            "auth": null
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "let expected = { message: 'info message' };",
+              "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+              "pm.test('Response includes expected', function () { pm.expect(json).to.deep.include(expected); });"
+            ]}}
+          ]
+        },
+        {
+          "name": "Logout user",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/auth/logout", "host": ["{{baseUrl}}"], "path": ["api","auth","logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Billing extra",
+      "item": [
+        {
+          "name": "Get billing history",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/billing/history?page=1&per_page=20&status=succeeded&date_from=2025-09-01&date_to=2025-09-30&without_pagination=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","billing","history"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "per_page", "value": "20" },
+                { "key": "status", "value": "succeeded" },
+                { "key": "date_from", "value": "2025-09-01" },
+                { "key": "date_to", "value": "2025-09-30" },
+                { "key": "without_pagination", "value": "false" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update saved payment",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/saved-payments/{{payment_id}}", "host": ["{{baseUrl}}"], "path": ["api","billing","saved-payments","{{payment_id}}"], "variable": [ { "key": "payment_id", "value": "123" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"active\": false\n}" }
+          }
+        },
+        {
+          "name": "Update subscription auto-renew",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/subscription/auto-renew", "host": ["{{baseUrl}}"], "path": ["api","billing","subscription","auto-renew"] },
+            "body": { "mode": "raw", "raw": "{\n  \"auto_renew\": true\n}" }
+          }
+        },
+        {
+          "name": "Get tariffs",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/tariffs", "host": ["{{baseUrl}}"], "path": ["api","billing","tariffs"] }
+          }
+        },
+        {
+          "name": "Update subscription submode",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/subscription/submode", "host": ["{{baseUrl}}"], "path": ["api","billing","subscription","submode"] },
+            "body": { "mode": "raw", "raw": "{\n  \"tariff_id\": \"srm-srm\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "States",
+      "item": [
+        {
+          "name": "Get states",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/states", "host": ["{{baseUrl}}"], "path": ["api","states"] } }
+        },
+        {
+          "name": "Get states short",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/states/short", "host": ["{{baseUrl}}"], "path": ["api","states","short"] } }
+        },
+        {
+          "name": "Get states fact payments average",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/states/fact-payments-average", "host": ["{{baseUrl}}"], "path": ["api","states","fact-payments-average"] } }
+        },
+        {
+          "name": "Update states",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/states/update", "host": ["{{baseUrl}}"], "path": ["api","states","update"] },
+            "body": { "mode": "raw", "raw": "{\n  \"base_payments_amount\": 19,\n  \"one_month_ago_amount\": 25\n}" }
+          }
+        },
+        {
+          "name": "Recalc states",
+          "request": { "method": "POST", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/states/recalc", "host": ["{{baseUrl}}"], "path": ["api","states","recalc"] } }
+        },
+        {
+          "name": "Update states steps",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/states/steps", "host": ["{{baseUrl}}"], "path": ["api","states","steps"] },
+            "body": { "mode": "raw", "raw": "{\n  \"steps_ids\": [1,2,3]\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unit economic",
+      "item": [
+        {
+          "name": "Get unit economic",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/unit-economic", "host": ["{{baseUrl}}"], "path": ["api","unit-economic"] } }
+        },
+        {
+          "name": "Get unit economic calc",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/unit-economic/calc?UA=1&C1=2&AvP=3&APC=4&AC=5&GoalCM=6",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","unit-economic","calc"],
+              "query": [
+                { "key": "UA", "value": "1" },
+                { "key": "C1", "value": "2" },
+                { "key": "AvP", "value": "3" },
+                { "key": "APC", "value": "4" },
+                { "key": "AC", "value": "5" },
+                { "key": "GoalCM", "value": "6" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get unit economic auto params",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/unit-economic/auto-params", "host": ["{{baseUrl}}"], "path": ["api","unit-economic","auto-params"] } }
+        },
+        {
+          "name": "Update unit economic",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/unit-economic/update", "host": ["{{baseUrl}}"], "path": ["api","unit-economic","update"] },
+            "body": { "mode": "raw", "raw": "{\n  \"UA\": 8,\n  \"C1\": 31909161.57,\n  \"AvP\": 1975.70,\n  \"APC\": 56.15,\n  \"AC\": 650104.9,\n  \"GoalCM\": 31.24,\n  \"UA_limit_show\": false,\n  \"C1_limit_show\": true,\n  \"AvP_limit_show\": false\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Widgets",
+      "item": [
+        {
+          "name": "Get total revenue",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/widgets/total-revenue?department_id=17&user_id=6&date_from=2025-01&date_to=2025-02&date_from_graph=2025-01-01&date_to_graph=2025-01-31&aggregation_graph=day", "host": ["{{baseUrl}}"], "path": ["api","widgets","total-revenue"], "query": [ {"key":"department_id","value":"17"},{"key":"user_id","value":"6"},{"key":"date_from","value":"2025-01"},{"key":"date_to","value":"2025-02"},{"key":"date_from_graph","value":"2025-01-01"},{"key":"date_to_graph","value":"2025-01-31"},{"key":"aggregation_graph","value":"day"} ] } }
+        },
+        {
+          "name": "Get conversions",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/widgets/conversions?department_id=11&user_id=17&date_from=2025-01&date_to=2025-02&date_from_graph=2025-01-01&date_to_graph=2025-01-31&aggregation_graph=day", "host": ["{{baseUrl}}"], "path": ["api","widgets","conversions"], "query": [ {"key":"department_id","value":"11"},{"key":"user_id","value":"17"},{"key":"date_from","value":"2025-01"},{"key":"date_to","value":"2025-02"},{"key":"date_from_graph","value":"2025-01-01"},{"key":"date_to_graph","value":"2025-01-31"},{"key":"aggregation_graph","value":"day"} ] } }
+        },
+        {
+          "name": "Get average receipt",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/widgets/average-receipt?department_id=17&user_id=17&date_from=2025-01&date_to=2025-02&date_from_graph=2025-01-01&date_to_graph=2025-01-31&aggregation_graph=day", "host": ["{{baseUrl}}"], "path": ["api","widgets","average-receipt"], "query": [ {"key":"department_id","value":"17"},{"key":"user_id","value":"17"},{"key":"date_from","value":"2025-01"},{"key":"date_to","value":"2025-02"},{"key":"date_from_graph","value":"2025-01-01"},{"key":"date_to_graph","value":"2025-01-31"},{"key":"aggregation_graph","value":"day"} ] } }
+        },
+        {
+          "name": "Get leads",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/widgets/leads?department_id=19&user_id=2&date_from=2025-01&date_to=2025-02&date_from_graph=2025-01-01&date_to_graph=2025-01-31&aggregation_graph=day", "host": ["{{baseUrl}}"], "path": ["api","widgets","leads"], "query": [ {"key":"department_id","value":"19"},{"key":"user_id","value":"2"},{"key":"date_from","value":"2025-01"},{"key":"date_to","value":"2025-02"},{"key":"date_from_graph","value":"2025-01-01"},{"key":"date_to_graph","value":"2025-01-31"},{"key":"aggregation_graph","value":"day"} ] } }
+        },
+        {
+          "name": "Get revenue per employee",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/widgets/revenue-per-employee?department_id=6&user_id=17&date_from=2025-01&date_to=2025-02&date_from_graph=2025-01-01&date_to_graph=2025-01-31&aggregation_graph=day", "host": ["{{baseUrl}}"], "path": ["api","widgets","revenue-per-employee"], "query": [ {"key":"department_id","value":"6"},{"key":"user_id","value":"17"},{"key":"date_from","value":"2025-01"},{"key":"date_to","value":"2025-02"},{"key":"date_from_graph","value":"2025-01-01"},{"key":"date_to_graph","value":"2025-01-31"},{"key":"aggregation_graph","value":"day"} ] } }
+        },
+        {
+          "name": "Get activities",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/widgets/activities?department_id=2&user_id=2&date_from=2025-01&date_to=2025-02&date_from_graph=2025-01-01&date_to_graph=2025-01-31&aggregation_graph=day&activities_ids=1,2", "host": ["{{baseUrl}}"], "path": ["api","widgets","activities"], "query": [ {"key":"department_id","value":"2"},{"key":"user_id","value":"2"},{"key":"date_from","value":"2025-01"},{"key":"date_to","value":"2025-02"},{"key":"date_from_graph","value":"2025-01-01"},{"key":"date_to_graph","value":"2025-01-31"},{"key":"aggregation_graph","value":"day"},{"key":"activities_ids","value":"1,2"} ] } }
+        },
+        {
+          "name": "Get calls ratings",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/widgets/calls-ratings?department_id=18&user_id=17&date_from=2025-01&date_to=2025-02&date_from_graph=2025-01-01&date_to_graph=2025-01-31&aggregation_graph=day", "host": ["{{baseUrl}}"], "path": ["api","widgets","calls-ratings"], "query": [ {"key":"department_id","value":"18"},{"key":"user_id","value":"17"},{"key":"date_from","value":"2025-01"},{"key":"date_to","value":"2025-02"},{"key":"date_from_graph","value":"2025-01-01"},{"key":"date_to_graph","value":"2025-01-31"},{"key":"aggregation_graph","value":"day"} ] } }
+        },
+        {
+          "name": "Get day advice",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/widgets/day-advice", "host": ["{{baseUrl}}"], "path": ["api","widgets","day-advice"] } }
+        },
+        {
+          "name": "Get actuality",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/widgets/actuality?department_id=1", "host": ["{{baseUrl}}"], "path": ["api","widgets","actuality"], "query": [ { "key": "department_id", "value": "1" } ] } }
+        }
+      ]
+    },
+    {
+      "name": "Webpush",
+      "item": [
+        {
+          "name": "Add webpush",
+          "request": { "method": "POST", "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/webpush/add", "host": ["{{baseUrl}}"], "path": ["api","webpush","add"] }, "body": { "mode": "raw", "raw": "{\n  \"endpoint\": \"consectetur\",\n  \"expired_at\": \"2025-12-31\"\n}" } }
+        },
+        {
+          "name": "Delete webpush",
+          "request": { "method": "POST", "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ], "url": { "raw": "{{baseUrl}}/api/webpush/delete", "host": ["{{baseUrl}}"], "path": ["api","webpush","delete"] }, "body": { "mode": "raw", "raw": "{\n  \"endpoint\": \"officia\"\n}" } }
+        }
+      ]
+    },
+    {
+      "name": "Feedback",
+      "item": [
+        {
+          "name": "Send feedback",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "multipart/form-data" } ],
+            "url": { "raw": "{{baseUrl}}/api/feedback", "host": ["{{baseUrl}}"], "path": ["api","feedback"] },
+            "body": { "mode": "formdata", "formdata": [ { "key": "contact", "value": "nlxgagpghcjhjw", "type": "text" }, { "key": "message", "value": "rjzkzfsggq", "type": "text" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invoices",
+      "item": [
+        {
+          "name": "Get invoices",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/invoices", "host": ["{{baseUrl}}"], "path": ["api","invoices"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data object', function () { pm.expect(json).to.have.property('data'); });"
+          ]}} ]
+        },
+        {
+          "name": "Create invoice",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/invoices", "host": ["{{baseUrl}}"], "path": ["api","invoices"] },
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 3\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data', function () { pm.expect(json).to.have.property('data'); });"
+          ]}} ]
+        }
+      ]
+    },
+    {
+      "name": "Logs",
+      "item": [
+        {
+          "name": "Get logs",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/logs?date_from=2025-01-01&date_to=2025-01-01",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","logs"],
+              "query": [
+                { "key": "date_from", "value": "2025-01-01" },
+                { "key": "date_to", "value": "2025-01-01" }
+              ]
+            }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data', function () { pm.expect(json).to.have.property('data'); });"
+          ]}} ]
+        }
+      ]
+    },
+    {
+      "name": "Reference",
+      "item": [
+        {
+          "name": "Get reference",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/reference", "host": ["{{baseUrl}}"], "path": ["api","reference"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.regions', function () { pm.expect(json).to.have.nested.property('data.regions'); });"
+          ]}} ]
+        },
+        {
+          "name": "Get reference videos",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/reference/videos", "host": ["{{baseUrl}}"], "path": ["api","reference","videos"] }
+          }
+        },
+        {
+          "name": "Get reference log types",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/reference/log-types", "host": ["{{baseUrl}}"], "path": ["api","reference","log-types"] }
+          }
+        },
+        {
+          "name": "Get reference states finish content",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/reference/states-finish-content", "host": ["{{baseUrl}}"], "path": ["api","reference","states-finish-content"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Telegram hook",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/telegram-hook", "host": ["{{baseUrl}}"], "path": ["api","telegram-hook"] },
+            "body": { "mode": "raw", "raw": "{}" },
+            "auth": null
+          }
+        },
+        {
+          "name": "Consultation request",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/consultation-request", "host": ["{{baseUrl}}"], "path": ["api","consultation-request"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"mncuxybkmq\",\n  \"phone\": \"91520112745\",\n  \"email\": \"flynch@example.com\"\n}" },
+            "auth": null
+          }
+        },
+        {
+          "name": "Partner request",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/partner-request", "host": ["{{baseUrl}}"], "path": ["api","partner-request"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"inlogpahcgvchwrgnndv\",\n  \"phone\": \"54472124351\",\n  \"email\": \"qrowe@example.com\"\n}" },
+            "auth": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get users",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?name=qiuvumwtgk&without_pagination=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","users"],
+              "query": [
+                { "key": "name", "value": "qiuvumwtgk" },
+                { "key": "without_pagination", "value": "true" }
+              ]
+            }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data', function () { pm.expect(json).to.have.property('data'); });"
+          ]}} ]
+        },
+        {
+          "name": "Get me",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api","users","me"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update me (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "multipart/form-data" } ],
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api","users","me"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [ { "key": "surname", "value": "dafymuyrmdntbfrgek", "type": "text" }, { "key": "name", "value": "jszjcnxfjl", "type": "text" } ]
+            }
+          }
+        },
+        {
+          "name": "Update me email",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/users/me/email", "host": ["{{baseUrl}}"], "path": ["api","users","me","email"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"gwyman@example.com\",\n  \"code\": \"641603\"\n}" }
+          }
+        },
+        {
+          "name": "Update me phone",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/users/me/phone", "host": ["{{baseUrl}}"], "path": ["api","users","me","phone"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"7\",\n  \"code\": \"729935\"\n}" }
+          }
+        },
+        {
+          "name": "Get user",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/users/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","users","{{id}}"], "variable": [ { "key": "id", "value": "7" } ] }
+          }
+        },
+        {
+          "name": "Create user (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "multipart/form-data" } ],
+            "url": { "raw": "{{baseUrl}}/api/users", "host": ["{{baseUrl}}"], "path": ["api","users"] },
+            "body": { "mode": "formdata", "formdata": [ { "key": "role", "value": "rop", "type": "text" }, { "key": "surname", "value": "gkahvo", "type": "text" }, { "key": "name", "value": "hhcpgbp", "type": "text" }, { "key": "email", "value": "alexie76@example.org", "type": "text" } ] }
+          }
+        },
+        {
+          "name": "Update user (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "multipart/form-data" } ],
+            "url": { "raw": "{{baseUrl}}/api/users/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","users","{{id}}"], "variable": [ { "key": "id", "value": "7" } ] },
+            "body": { "mode": "formdata", "formdata": [ { "key": "role", "value": "mop", "type": "text" }, { "key": "status", "value": "active", "type": "text" } ] }
+          }
+        },
+        {
+          "name": "Update password",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/users/password", "host": ["{{baseUrl}}"], "path": ["api","users","password"] },
+            "body": { "mode": "raw", "raw": "{\n  \"password_old\": \"pp\",\n  \"password\": \"o?o:ij7UxG>\",\n  \"password_confirm\": \"o?o:ij7UxG>\"\n}" }
+          }
+        },
+        {
+          "name": "Get fake email",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/users/fake-email", "host": ["{{baseUrl}}"], "path": ["api","users","fake-email"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get notifications",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/notifications", "host": ["{{baseUrl}}"], "path": ["api","notifications"] }
+          }
+        },
+        {
+          "name": "Update notifications",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/notifications", "host": ["{{baseUrl}}"], "path": ["api","notifications"] },
+            "body": { "mode": "raw", "raw": "{\n  \"department_id\": 8,\n  \"time\": \"00:43\",\n  \"chat_id\": 273\n}" }
+          }
+        },
+        {
+          "name": "Delete notifications",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/notifications?department_id=5", "host": ["{{baseUrl}}"], "path": ["api","notifications"], "query": [ { "key": "department_id", "value": "5" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Files",
+      "item": [
+        {
+          "name": "Get file",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/file/{{disk}}/{{filepath}}", "host": ["{{baseUrl}}"], "path": ["api","file","{{disk}}","{{filepath}}"], "variable": [ { "key": "disk", "value": "harum" }, { "key": "filepath", "value": "0hM" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Data",
+      "item": [
+        {
+          "name": "Get data",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/data?department_id=12&user_id=5&date_from=2025-11-01&date_to=2041-05-01",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","data"],
+              "query": [
+                { "key": "department_id", "value": "12" },
+                { "key": "user_id", "value": "5" },
+                { "key": "date_from", "value": "2025-11-01" },
+                { "key": "date_to", "value": "2041-05-01" }
+              ]
+            }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has array payload', function () { pm.expect(Array.isArray(json)).to.be.true; });"
+          ]}} ]
+        },
+        {
+          "name": "Check data input",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/input/check", "host": ["{{baseUrl}}"], "path": ["api","data","input","check"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": [\n    {\n      \"indicator\": \"plan_payments_amount\",\n      \"department_id\": 1,\n      \"activity_id\": 1,\n      \"user_id\": 1\n    }\n  ]\n}"
+            }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data array', function () { pm.expect(json).to.have.property('data'); pm.expect(Array.isArray(json.data)).to.be.true; });"
+          ]}} ]
+        },
+        {
+          "name": "Save data input",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/input/save", "host": ["{{baseUrl}}"], "path": ["api","data","input","save"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.test('Array or object returned', function () { const t = pm.response.json(); pm.expect([Array.isArray(t), typeof t==='object']).to.include(true); });"
+          ]}} ]
+        },
+        {
+          "name": "Create plan payments amount",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/plan-payments-amount", "host": ["{{baseUrl}}"], "path": ["api","data","plan-payments-amount"] },
+            "body": { "mode": "raw", "raw": "{\n  \"department_id\": 18,\n  \"user_id\": 15,\n  \"date\": \"2025-01-01\",\n  \"value\": 6,\n  \"confirmed\": true\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update plan payments amount",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/plan-payments-amount/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","plan-payments-amount","{{id}}"], "variable": [ { "key": "id", "value": "47" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"value\": 14,\n  \"confirmed\": true\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Delete plan payments amount",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/plan-payments-amount/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","plan-payments-amount","{{id}}"], "variable": [ { "key": "id", "value": "47" } ] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Create fact payments amount",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-payments-amount", "host": ["{{baseUrl}}"], "path": ["api","data","fact-payments-amount"] },
+            "body": { "mode": "raw", "raw": "{\n  \"department_id\": 14,\n  \"user_id\": 17,\n  \"period\": \"week\",\n  \"date\": \"2025-01-01\",\n  \"value\": 9\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update fact payments amount",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-payments-amount/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","fact-payments-amount","{{id}}"], "variable": [ { "key": "id", "value": "665" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"value\": 6\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Delete fact payments amount",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-payments-amount/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","fact-payments-amount","{{id}}"], "variable": [ { "key": "id", "value": "665" } ] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Create plan leads count",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/plan-leads-count", "host": ["{{baseUrl}}"], "path": ["api","data","plan-leads-count"] },
+            "body": { "mode": "raw", "raw": "{\n  \"department_id\": 12,\n  \"date\": \"2025-01-01\",\n  \"value\": 10,\n  \"confirmed\": true\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update plan leads count",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/plan-leads-count/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","plan-leads-count","{{id}}"], "variable": [ { "key": "id", "value": "50" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"value\": 19,\n  \"confirmed\": false\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Delete plan leads count",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/plan-leads-count/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","plan-leads-count","{{id}}"], "variable": [ { "key": "id", "value": "50" } ] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Create fact leads count",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-leads-count", "host": ["{{baseUrl}}"], "path": ["api","data","fact-leads-count"] },
+            "body": { "mode": "raw", "raw": "{\n  \"department_id\": 5,\n  \"user_id\": 16,\n  \"period\": \"day\",\n  \"date\": \"2025-01-01\",\n  \"value\": 19\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update fact leads count",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-leads-count/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","fact-leads-count","{{id}}"], "variable": [ { "key": "id", "value": "572" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"value\": 18\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Delete fact leads count",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-leads-count/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","fact-leads-count","{{id}}"], "variable": [ { "key": "id", "value": "572" } ] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data', function () { pm.expect(json).to.have.property('data'); });"
+          ]}} ]
+        },
+        {
+          "name": "Create fact invoices count",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-invoices-count", "host": ["{{baseUrl}}"], "path": ["api","data","fact-invoices-count"] },
+            "body": { "mode": "raw", "raw": "{\n  \"department_id\": 8,\n  \"user_id\": 1,\n  \"period\": \"week\",\n  \"date\": \"2025-01-01\",\n  \"value\": 10\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data', function () { pm.expect(json).to.have.property('data'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update fact invoices count",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-invoices-count/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","fact-invoices-count","{{id}}"], "variable": [ { "key": "id", "value": "1" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"value\": 19\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data', function () { pm.expect(json).to.have.property('data'); });"
+          ]}} ]
+        },
+        {
+          "name": "Delete fact invoices count",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-invoices-count/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","fact-invoices-count","{{id}}"], "variable": [ { "key": "id", "value": "1" } ] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data', function () { pm.expect(json).to.have.property('data'); });"
+          ]}} ]
+        },
+        {
+          "name": "Create fact payments count",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-payments-count", "host": ["{{baseUrl}}"], "path": ["api","data","fact-payments-count"] },
+            "body": { "mode": "raw", "raw": "{\n  \"department_id\": 8,\n  \"user_id\": 11,\n  \"period\": \"week\",\n  \"date\": \"2025-01-01\",\n  \"value\": 17\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update fact payments count",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-payments-count/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","fact-payments-count","{{id}}"], "variable": [ { "key": "id", "value": "619" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"value\": 11\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        },
+        {
+          "name": "Delete fact payments count",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/data/fact-payments-count/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","data","fact-payments-count","{{id}}"], "variable": [ { "key": "id", "value": "619" } ] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+          ]}} ]
+        }
+      ]
+      },
+      {
+        "name": "Company",
+      "item": [
+        {
+          "name": "Get company info",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/company", "host": ["{{baseUrl}}"], "path": ["api","company"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let expected = { data: { id: 1, name: '111', status: 'active' } };",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Includes expected fields', function () { pm.expect(json).to.deep.include(expected); });"
+          ]}} ]
+        },
+        {
+          "name": "Create or update company",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "multipart/form-data" } ],
+            "url": { "raw": "{{baseUrl}}/api/company", "host": ["{{baseUrl}}"], "path": ["api","company"] },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "scwnwxdfmluyd", "type": "text" },
+                { "key": "niche_id", "value": "6", "type": "text" },
+                { "key": "region_id", "value": "12", "type": "text" },
+                { "key": "inn", "value": "1231231234", "type": "text" }
+              ]
+            }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data', function () { pm.expect(json).to.have.property('data'); });"
+          ]}} ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboards",
+      "item": [
+        {
+          "name": "Get company dashboard",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/company/dashboard", "host": ["{{baseUrl}}"], "path": ["api","company","dashboard"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has funnel_stages', function () { pm.expect(json).to.have.property('funnel_stages'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update company dashboard",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/company/dashboard", "host": ["{{baseUrl}}"], "path": ["api","company","dashboard"] },
+            "body": { "mode": "raw", "raw": "{\n  \"funnel_stages_conversions\": [],\n  \"departments\": []\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.test('Text equals ok', function () { pm.expect(pm.response.text().trim()).to.eql('ok'); });"
+          ]}} ]
+        },
+        {
+          "name": "Get department dashboard",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/departments/{{id}}/dashboard", "host": ["{{baseUrl}}"], "path": ["api","departments","{{id}}","dashboard"], "variable": [ { "key": "id", "value": "1" } ] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has funnel_stages', function () { pm.expect(json).to.have.property('funnel_stages'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update department dashboard",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/departments/{{id}}/dashboard", "host": ["{{baseUrl}}"], "path": ["api","departments","{{id}}","dashboard"], "variable": [ { "key": "id", "value": "1" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"calls_ratings_enabled\": true,\n  \"weekdays_schedule\": \"5days\"\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.test('Text equals ok', function () { pm.expect(pm.response.text().trim()).to.eql('ok'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update funnel stages for department",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/departments/{{id}}/dashboard/funnel-stages", "host": ["{{baseUrl}}"], "path": ["api","departments","{{id}}","dashboard","funnel-stages"], "variable": [ { "key": "id", "value": "1" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"funnel_stages\": []\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.test('Text equals ok', function () { pm.expect(pm.response.text().trim()).to.eql('ok'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update funnel stages conversions for department",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/departments/{{id}}/dashboard/funnel-stages-conversions", "host": ["{{baseUrl}}"], "path": ["api","departments","{{id}}","dashboard","funnel-stages-conversions"], "variable": [ { "key": "id", "value": "1" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"funnel_stages_conversions\": []\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.test('Text equals ok', function () { pm.expect(pm.response.text().trim()).to.eql('ok'); });"
+          ]}} ]
+        },
+        {
+          "name": "Update activities for department",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/departments/{{id}}/dashboard/activities", "host": ["{{baseUrl}}"], "path": ["api","departments","{{id}}","dashboard","activities"], "variable": [ { "key": "id", "value": "1" } ] },
+            "body": { "mode": "raw", "raw": "{\n  \"activities\": []\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.test('Text equals ok', function () { pm.expect(pm.response.text().trim()).to.eql('ok'); });"
+          ]}} ]
+        }
+      ]
+    },
+    {
+      "name": "Billing",
+      "item": [
+        {
+          "name": "Billing webhook",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/webhook", "host": ["{{baseUrl}}"], "path": ["api","billing","webhook"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let expected = { message: 'OK' };",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Response includes expected', function () { pm.expect(json).to.deep.include(expected); });"
+          ]}} ]
+        },
+        {
+          "name": "Get billing balance",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/balance", "host": ["{{baseUrl}}"], "path": ["api","billing","balance"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let expected = { data: { balance: 15 } };",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Response includes expected', function () { pm.expect(json).to.deep.include(expected); });"
+          ]}} ]
+        },
+        {
+          "name": "Check payment status",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/check-payment/{{payment_id}}", "host": ["{{baseUrl}}"], "path": ["api","billing","check-payment","{{payment_id}}"], "variable": [ { "key": "payment_id", "value": "40703991-6174-3fed-b03c-66e8f281e6eb" } ] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.test('Text equals ok', function () { pm.expect(pm.response.text().trim()).to.eql('ok'); });"
+          ]}} ]
+        },
+        {
+          "name": "Top up balance",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/top-up", "host": ["{{baseUrl}}"], "path": ["api","billing","top-up"] },
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 100,\n  \"tariff_id\": \"s-s\",\n  \"promo_code\": \"PROMO10\"\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let expected = { data: { url: 'https://yookassa.ru/redirect-url' } };",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Response includes expected', function () { pm.expect(json).to.deep.include(expected); });"
+          ]}} ]
+        },
+        {
+          "name": "Buy subscription",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/subscription-buy", "host": ["{{baseUrl}}"], "path": ["api","billing","subscription-buy"] },
+            "body": { "mode": "raw", "raw": "{\n  \"tariff_id\": \"s-s\",\n  \"period_key\": \"30days\",\n  \"auto_renew\": true,\n  \"promo_code\": \"ipsa\"\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "pm.test('Text equals ok', function () { pm.expect(pm.response.text().trim()).to.eql('ok'); });"
+          ]}} ]
+        },
+        {
+          "name": "Get onboarding status",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/onboarding-status?department_id=5", "host": ["{{baseUrl}}"], "path": ["api","billing","onboarding-status"], "query": [ { "key": "department_id", "value": "5" } ] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let expected = { data: { show_onboarding: false } };",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Response includes expected', function () { pm.expect(json).to.deep.include(expected); });"
+          ]}} ]
+        },
+        {
+          "name": "Get current tariff",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/current-tariff", "host": ["{{baseUrl}}"], "path": ["api","billing","current-tariff"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let expected = { data: { tariff_id: 'sr-s', started_at: '2025-08-05T21:00:00Z', finished_at: '2025-08-28T20:59:59Z', auto_renew: true } };",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Response includes expected', function () { pm.expect(json).to.deep.include(expected); });"
+          ]}} ]
+        },
+        {
+          "name": "Check promo code",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/check-promo", "host": ["{{baseUrl}}"], "path": ["api","billing","check-promo"] },
+            "body": { "mode": "raw", "raw": "{\n  \"tariff_id\": \"s-s\",\n  \"period_key\": \"30days\",\n  \"promo_code\": \"PROMO10\"\n}" }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let expected = { data: { full_price: '5000', discount_percent: 10, discount: 500, final_price: 4500 } };",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Response includes expected', function () { pm.expect(json).to.deep.include(expected); });"
+          ]}} ]
+        },
+        {
+          "name": "Get saved payments",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/billing/saved-payments", "host": ["{{baseUrl}}"], "path": ["api","billing","saved-payments"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": [
+            "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+            "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+            "pm.test('Has data array', function () { pm.expect(json).to.have.property('data'); pm.expect(Array.isArray(json.data)).to.be.true; });"
+          ]}} ]
+        }
+      ]
+    },
+    {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "Get departments",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments?name=q&is_hidden=false&without_pagination=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments"],
+              "query": [
+                { "key": "name", "value": "q" },
+                { "key": "is_hidden", "value": "false" },
+                { "key": "without_pagination", "value": "true" }
+              ]
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "let expected = { data: { id: 1, name: '111', is_hidden: false, status: 'active', created_at: null, updated_at: '2025-10-14T18:32:25.000000Z', rop: null } };",
+              "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+              "pm.test('Includes expected shape', function () { pm.expect(json).to.deep.include(expected); });"
+            ]}}
+          ]
+        },
+        {
+          "name": "Get department",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/departments/{{id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "departments", "{{id}}"],
+              "variable": [ { "key": "id", "value": "1" } ]
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "let expected = { data: { id: 1, name: '111', is_hidden: false, status: 'active' } };",
+              "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+              "pm.test('Includes expected shape', function () { pm.expect(json).to.deep.include(expected); });"
+            ]}}
+          ]
+        },
+        {
+          "name": "Create department",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/departments", "host": ["{{baseUrl}}"], "path": ["api", "departments"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"rzdjsnqqsommozgrjqiqu\",\n  \"rop_id\": 2,\n  \"mops_ids\": [1,2]\n}"
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "let expected = { data: { id: 1, name: '111', is_hidden: false, status: 'active' } };",
+              "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+              "pm.test('Includes expected shape', function () { pm.expect(json).to.deep.include(expected); });"
+            ]}}
+          ]
+        },
+        {
+          "name": "Update department",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/departments/{{id}}", "host": ["{{baseUrl}}"], "path": ["api", "departments", "{{id}}"], "variable": [ { "key": "id", "value": "1" } ] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"mbwhha\",\n  \"is_hidden\": false,\n  \"status\": \"active\",\n  \"rop_id\": 14,\n  \"mops_ids\": [1,2]\n}"
+            }
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "let expected = { data: { id: 1, name: '111', is_hidden: false, status: 'active' } };",
+              "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+              "pm.test('Includes expected shape', function () { pm.expect(json).to.deep.include(expected); });"
+            ]}}
+          ]
+        },
+        {
+          "name": "Delete department",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Accept", "value": "application/json" } ],
+            "url": { "raw": "{{baseUrl}}/api/departments/{{id}}", "host": ["{{baseUrl}}"], "path": ["api", "departments", "{{id}}"], "variable": [ { "key": "id", "value": "1" } ] }
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": [
+              "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+              "let expected = { data: { id: 1 } };",
+              "let json; try { json = pm.response.json(); } catch(e) { json = {}; }",
+              "pm.test('Has data.id', function () { pm.expect(json).to.have.nested.property('data.id'); });"
+            ]}}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Legacy (placeholder)",
+      "item": []
+    }
+  ]
+}
