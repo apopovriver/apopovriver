@@ -1,8 +1,0 @@
-[
-  {
-    "dt": "2025-11-01 00:00:00",
-    "device_id": "9ff5574f-5b19-4709-b5c1-218dbf9af6c1",
-    "phenomenon": "VeryStrongWind",
-    "trigger": {"type": "avg_speed", "wv": 21.0}
-  }
-]
