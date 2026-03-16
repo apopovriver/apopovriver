@@ -4,7 +4,7 @@
 
 <div align="left" style="font-size:18px; line-height:1.6;">
 
-<h2 align="left">QA Engineer (29 y.o.) (3+ years experience) now in Riverstart company.</h2>
+<h2 align="left">QA Engineer (30 y.o.) (4+ years experience) now in Riverstart company.</h2>
 <p align="left" style="margin:6px 0;">
   Actively using AI (OpenAI, Google AI, Grok, DeepSeek, Applitools Eyes) to optimize time and automate routine
 </p>
